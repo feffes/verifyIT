@@ -79,7 +79,6 @@ fun main(args : Array<String>) {
 
 
 
-        //val verifikatmall = File(ClassLoader.getSystemClassLoader().getResource("Verifikatmall.pdf").file)
         val verifikatmall = ClassLoader.getSystemClassLoader().getResourceAsStream("Verifikatmall.pdf")
 
 
@@ -153,7 +152,7 @@ fun main(args : Array<String>) {
 
 
         }
-        pdf.save(args[1]+"/"+verification.verificationNumber+".pdf")
+        pdf.save(handleDirectory(args[1])+"/"+verification.verificationNumber+".pdf")
 
     }
 
@@ -161,6 +160,13 @@ fun main(args : Array<String>) {
 
 
 
+}
+
+fun handleDirectory(directory:String):String{
+    directory.replaceFirst("~", System.getProperty("user.home"))
+    if(directory.last().equals("/")||directory.last().equals("\\"))
+       return directory.substring(0, directory.lastIndex-1)
+    return directory
 }
 
 
