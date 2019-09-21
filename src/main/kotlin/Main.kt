@@ -30,29 +30,26 @@ fun main(args : Array<String>) {
 
 
     val dataFormatter = DataFormatter()
-    val workbook = WorkbookFactory.create(File(args[0]))
-    val sheet = workbook.getSheetAt(0)
+    val sheet = File(args[0]).readLines(Charsets.ISO_8859_1)
+    println(sheet[0])
     val verifications = ArrayList<Verification>()
-
-
-    println(sheet.lastRowNum.toString())
 
 
 
     var lastVerificationNumber = ""
 
-    for (i in 1..sheet.lastRowNum){
+    for (i in 1..(sheet.size - 1)){
 
-        val currentRow = sheet.getRow(i)
-        val verificationNumber = dataFormatter.formatCellValue(currentRow.getCell(verCollumn))
-        val verificationDate = dataFormatter.formatCellValue(currentRow.getCell(verDateCollumn))
-        val verificationText = dataFormatter.formatCellValue(currentRow.getCell(verTextCollumn))
+        val currentRow = sheet[i].split("\t")
+        val verificationNumber = currentRow[verCollumn]
+        val verificationDate = currentRow[verDateCollumn]
+        val verificationText = currentRow[verTextCollumn]
 
-        val ks = dataFormatter.formatCellValue(currentRow.getCell(ksCollumn))
-        val accountNumber = dataFormatter.formatCellValue(currentRow.getCell(accountNumberCollumn))
-        val accountName = dataFormatter.formatCellValue(currentRow.getCell(accountNameCollumn))
-        val debet = dataFormatter.formatCellValue(currentRow.getCell(debetCollumn))
-        val credit = dataFormatter.formatCellValue(currentRow.getCell(creditCollumn))
+        val ks = currentRow[ksCollumn]
+        val accountNumber = currentRow[accountNumberCollumn]
+        val accountName = currentRow[accountNameCollumn]
+        val debet = currentRow[debetCollumn]
+        val credit = currentRow[creditCollumn]
 
         if (lastVerificationNumber != verificationNumber)
             verifications.add(Verification(verificationNumber, verificationText,verificationDate,"")) //Descriptions not fully implemented.
