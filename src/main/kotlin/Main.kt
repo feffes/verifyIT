@@ -1,5 +1,6 @@
 package main.kotlin
 import org.apache.pdfbox.pdmodel.PDDocument
+import org.apache.pdfbox.multipdf.PDFMergerUtility
 import org.apache.poi.ss.usermodel.DataFormatter
 import java.io.File
 import org.apache.poi.ss.usermodel.WorkbookFactory
@@ -70,6 +71,8 @@ fun main(args : Array<String>) {
 
     }
 
+    var all = PDDocument()
+    val merger = PDFMergerUtility()
 
     for(verification in verifications){
 
@@ -80,6 +83,7 @@ fun main(args : Array<String>) {
 
 
 
+        
         val pdf = PDDocument.load(verifikatmall)
         val docCatalog = pdf.documentCatalog
         val acroForm = docCatalog.acroForm
@@ -93,7 +97,7 @@ fun main(args : Array<String>) {
         val totalField = fields.get(2)
 
 
-        /* val ks1 = fields.get(3)
+        /* val ks1 = fields.get(3)org.apache.pdfbox.pdmodel.PDDocument
         val ks2 = fields.get(4)
         val ks3 = fields.get(5)
         val ks4 = fields.get(6)
@@ -147,12 +151,19 @@ fun main(args : Array<String>) {
             else
                 fields.get(i+27).setValue(verification.verificationRows.get(i).accountName)
 
-
         }
-        pdf.save(handleDirectory(args[1])+"/"+verification.verificationNumber+".pdf")
+
+        if(args.contains("-A"))
+            merger.appendDocument(all, pdf)
+        else
+            pdf.save(handleDirectory(args[1])+"/"+verification.verificationNumber+".pdf")
+
+        pdf.close()
 
     }
 
+    if(args.contains("-A"))
+            all.save(handleDirectory(args[1])+"/all.pdf")
 
 
 
