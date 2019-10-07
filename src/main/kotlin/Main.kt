@@ -94,7 +94,7 @@ fun main(args : Array<String>) {
         val totalField = fields.get(2)
 
 
-        /* val ks1 = fields.get(3)org.apache.pdfbox.pdmodel.PDDocument
+        /* val ks1 = fields.get(3)
         val ks2 = fields.get(4)
         val ks3 = fields.get(5)
         val ks4 = fields.get(6)
