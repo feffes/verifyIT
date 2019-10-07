@@ -1,9 +1,7 @@
 package main.kotlin
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.multipdf.PDFMergerUtility
-import org.apache.poi.ss.usermodel.DataFormatter
 import java.io.File
-import org.apache.poi.ss.usermodel.WorkbookFactory
 import java.util.*
 
 
@@ -30,7 +28,6 @@ fun main(args : Array<String>) {
 
 
 
-    val dataFormatter = DataFormatter()
     val sheet = File(args[0]).readLines(Charsets.ISO_8859_1)
     println(sheet[0])
     val verifications = ArrayList<Verification>()
