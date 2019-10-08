@@ -1,8 +1,7 @@
 package main.kotlin
 import org.apache.pdfbox.pdmodel.PDDocument
-import org.apache.poi.ss.usermodel.DataFormatter
+import org.apache.pdfbox.multipdf.PDFMergerUtility
 import java.io.File
-import org.apache.poi.ss.usermodel.WorkbookFactory
 import java.util.*
 
 
@@ -29,30 +28,26 @@ fun main(args : Array<String>) {
 
 
 
-    val dataFormatter = DataFormatter()
-    val workbook = WorkbookFactory.create(File(args[0]))
-    val sheet = workbook.getSheetAt(0)
+    val sheet = File(args[0]).readLines(Charsets.ISO_8859_1)
+    println(sheet[0])
     val verifications = ArrayList<Verification>()
-
-
-    println(sheet.lastRowNum.toString())
 
 
 
     var lastVerificationNumber = ""
 
-    for (i in 1..sheet.lastRowNum){
+    for (i in 1..(sheet.size - 1)){
 
-        val currentRow = sheet.getRow(i)
-        val verificationNumber = dataFormatter.formatCellValue(currentRow.getCell(verCollumn))
-        val verificationDate = dataFormatter.formatCellValue(currentRow.getCell(verDateCollumn))
-        val verificationText = dataFormatter.formatCellValue(currentRow.getCell(verTextCollumn))
+        val currentRow = sheet[i].split("\t")
+        val verificationNumber = currentRow[verCollumn]
+        val verificationDate = currentRow[verDateCollumn]
+        val verificationText = currentRow[verTextCollumn]
 
-        val ks = dataFormatter.formatCellValue(currentRow.getCell(ksCollumn))
-        val accountNumber = dataFormatter.formatCellValue(currentRow.getCell(accountNumberCollumn))
-        val accountName = dataFormatter.formatCellValue(currentRow.getCell(accountNameCollumn))
-        val debet = dataFormatter.formatCellValue(currentRow.getCell(debetCollumn))
-        val credit = dataFormatter.formatCellValue(currentRow.getCell(creditCollumn))
+        val ks = currentRow[ksCollumn]
+        val accountNumber = currentRow[accountNumberCollumn]
+        val accountName = currentRow[accountNameCollumn]
+        val debet = currentRow[debetCollumn]
+        val credit = currentRow[creditCollumn]
 
         if (lastVerificationNumber != verificationNumber)
             verifications.add(Verification(verificationNumber, verificationText,verificationDate,"")) //Descriptions not fully implemented.
@@ -73,6 +68,8 @@ fun main(args : Array<String>) {
 
     }
 
+    var all = PDDocument()
+    val merger = PDFMergerUtility()
 
     for(verification in verifications){
 
@@ -83,6 +80,7 @@ fun main(args : Array<String>) {
 
 
 
+        
         val pdf = PDDocument.load(verifikatmall)
         val docCatalog = pdf.documentCatalog
         val acroForm = docCatalog.acroForm
@@ -150,12 +148,19 @@ fun main(args : Array<String>) {
             else
                 fields.get(i+27).setValue(verification.verificationRows.get(i).accountName)
 
-
         }
-        pdf.save(handleDirectory(args[1])+"/"+verification.verificationNumber+".pdf")
+
+        if(args.contains("-A"))
+            merger.appendDocument(all, pdf)
+        else
+            pdf.save(handleDirectory(args[1])+"/"+verification.verificationNumber+".pdf")
+
+        pdf.close()
 
     }
 
+    if(args.contains("-A"))
+            all.save(handleDirectory(args[1])+"/all.pdf")
 
 
 
